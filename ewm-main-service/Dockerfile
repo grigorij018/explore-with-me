@@ -2,4 +2,9 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-CMD ["sh", "-c", "echo 'ewm-main-service is not implemented at stage 1' && sleep infinity"]
+ARG JAR_FILE=target/ewm-main-service-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
