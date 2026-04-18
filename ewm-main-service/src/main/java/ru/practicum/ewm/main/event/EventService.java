@@ -45,7 +45,7 @@ public class EventService {
     @Transactional
     public EventFullDto create(Long userId, NewEventDto dto) {
         if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Event date must be at least two hours from now");
+            throw new BadRequestException("Event date must be at least two hours from now");
         }
         User user = userService.getExisting(userId);
         Category category = categoryService.getExisting(dto.getCategory());
@@ -73,7 +73,7 @@ public class EventService {
             throw new ConflictException("Only pending or canceled events can be changed");
         }
         if (request.getEventDate() != null && request.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Event date must be at least two hours from now");
+            throw new BadRequestException("Event date must be at least two hours from now");
         }
         applyCommonUpdate(event, request.getAnnotation(), request.getCategory(), request.getDescription(),
                 request.getEventDate(), request.getLocation(), request.getPaid(), request.getParticipantLimit(),
@@ -101,6 +101,9 @@ public class EventService {
     @Transactional
     public EventFullDto updateAdminEvent(Long eventId, UpdateEventAdminRequest request) {
         Event event = getExisting(eventId);
+        if (request.getEventDate() != null && request.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new BadRequestException("Event date must be at least one hour from now");
+        }
         applyCommonUpdate(event, request.getAnnotation(), request.getCategory(), request.getDescription(),
                 request.getEventDate(), request.getLocation(), request.getPaid(), request.getParticipantLimit(),
                 request.getRequestModeration(), request.getTitle());
