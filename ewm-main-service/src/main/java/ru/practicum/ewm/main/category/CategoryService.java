@@ -24,7 +24,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryDto update(Long catId, CategoryDto request) {
+    public CategoryDto update(Long catId, NewCategoryDto request) {
         Category category = getExisting(catId);
         category.setName(request.getName());
         return CategoryMapper.toDto(category);
