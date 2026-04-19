@@ -129,7 +129,8 @@ public class EventService {
     @Transactional(readOnly = true)
     public List<EventShortDto> publicSearch(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
                                             LocalDateTime rangeEnd, boolean onlyAvailable, EventSort sort,
-                                            int from, int size) {
+                                            int from, int size, String uri, String ip) {
+        statsAdapter.hit(uri, ip);
         validateRange(rangeStart, rangeEnd);
         LocalDateTime start = rangeStart == null && rangeEnd == null ? LocalDateTime.now() : rangeStart;
         Specification<Event> spec = Specification.where(EventSpecifications.statesIn(List.of(EventState.PUBLISHED)))
@@ -163,7 +164,8 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public EventFullDto publicGet(Long eventId) {
+    public EventFullDto publicGet(Long eventId, String uri, String ip) {
+        statsAdapter.hit(uri, ip);
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
         return toFullDto(event);

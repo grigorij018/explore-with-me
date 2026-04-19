@@ -23,7 +23,6 @@ import ru.practicum.ewm.main.dto.event.EventState;
 import ru.practicum.ewm.main.dto.event.NewEventDto;
 import ru.practicum.ewm.main.dto.event.UpdateEventAdminRequest;
 import ru.practicum.ewm.main.dto.event.UpdateEventUserRequest;
-import ru.practicum.ewm.main.stats.StatsAdapter;
 
 import java.util.List;
 
@@ -32,7 +31,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
-    private final StatsAdapter statsAdapter;
 
     @GetMapping("/admin/events")
     public List<EventFullDto> adminSearch(@RequestParam(required = false) List<Long> users,
@@ -65,17 +63,15 @@ public class EventController {
                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                             @RequestParam(defaultValue = "10") @Positive int size,
                                             HttpServletRequest servletRequest) {
-        statsAdapter.hit(servletRequest.getRequestURI(), servletRequest.getRemoteAddr());
         return eventService.publicSearch(text, categories, paid,
                 DateTimeParser.parseNullable(rangeStart, "rangeStart"),
                 DateTimeParser.parseNullable(rangeEnd, "rangeEnd"),
-                onlyAvailable, sort, from, size);
+                onlyAvailable, sort, from, size, servletRequest.getRequestURI(), servletRequest.getRemoteAddr());
     }
 
     @GetMapping("/events/{id}")
     public EventFullDto publicGet(@PathVariable Long id, HttpServletRequest servletRequest) {
-        statsAdapter.hit(servletRequest.getRequestURI(), servletRequest.getRemoteAddr());
-        return eventService.publicGet(id);
+        return eventService.publicGet(id, servletRequest.getRequestURI(), servletRequest.getRemoteAddr());
     }
 
     @GetMapping("/users/{userId}/events")
