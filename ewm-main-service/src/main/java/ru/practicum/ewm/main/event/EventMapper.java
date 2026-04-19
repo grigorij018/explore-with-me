@@ -1,5 +1,6 @@
 package ru.practicum.ewm.main.event;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.main.category.CategoryMapper;
 import ru.practicum.ewm.main.dto.event.EventFullDto;
 import ru.practicum.ewm.main.dto.event.EventShortDto;
@@ -10,10 +11,8 @@ import ru.practicum.ewm.main.user.UserMapper;
 
 import java.time.LocalDateTime;
 
-public final class EventMapper {
-    private EventMapper() {
-    }
-
+@UtilityClass
+public class EventMapper {
     public static Event toEntity(NewEventDto dto, User initiator, ru.practicum.ewm.main.category.Category category) {
         return Event.builder()
                 .annotation(dto.getAnnotation())

@@ -32,12 +32,8 @@ public class ErrorHandler {
         return build(HttpStatus.CONFLICT, "Integrity constraint has been violated.", exception.getMostSpecificCause().getMessage());
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiError> handleBadRequest(BadRequestException exception) {
-        return build(HttpStatus.BAD_REQUEST, "Incorrectly made request.", exception.getMessage());
-    }
-
     @ExceptionHandler({
+            BadRequestException.class,
             ConstraintViolationException.class,
             HttpMessageNotReadableException.class,
             MethodArgumentNotValidException.class,

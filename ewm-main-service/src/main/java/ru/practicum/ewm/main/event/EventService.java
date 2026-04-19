@@ -29,6 +29,7 @@ import ru.practicum.ewm.main.user.UserService;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -180,7 +181,7 @@ public class EventService {
         return eventRepository.findByIdIn(ids);
     }
 
-    public Map<Long, Long> getConfirmedCounts(Collection<Event> events) {
+    private Map<Long, Long> getConfirmedCounts(Collection<Event> events) {
         if (events == null || events.isEmpty()) {
             return Map.of();
         }
@@ -194,22 +195,22 @@ public class EventService {
                 ));
     }
 
-    public Map<Long, Long> getViews(Collection<Event> events) {
+    private Map<Long, Long> getViews(Collection<Event> events) {
         if (events == null || events.isEmpty()) {
             return Map.of();
         }
-        Map<String, Long> viewsByUri = statsAdapter.getViews(events.stream()
-                .map(event -> "/events/" + event.getId())
-                .toList());
+        Map<String, LocalDateTime> publishedOnByUri = new LinkedHashMap<>();
+        events.forEach(event -> publishedOnByUri.put("/events/" + event.getId(), event.getPublishedOn()));
+        Map<String, Long> viewsByUri = statsAdapter.getViews(publishedOnByUri);
         return events.stream()
                 .collect(Collectors.toMap(Event::getId, event -> viewsByUri.getOrDefault("/events/" + event.getId(), 0L)));
     }
 
-    public EventFullDto toFullDto(Event event) {
+    private EventFullDto toFullDto(Event event) {
         return toFullDtos(List.of(event)).getFirst();
     }
 
-    public List<EventFullDto> toFullDtos(List<Event> events) {
+    private List<EventFullDto> toFullDtos(List<Event> events) {
         Map<Long, Long> confirmed = getConfirmedCounts(events);
         Map<Long, Long> views = getViews(events);
         return events.stream()

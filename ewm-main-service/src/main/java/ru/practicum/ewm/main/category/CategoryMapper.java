@@ -1,12 +1,11 @@
 package ru.practicum.ewm.main.category;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.main.dto.category.CategoryDto;
 import ru.practicum.ewm.main.dto.category.NewCategoryDto;
 
-public final class CategoryMapper {
-    private CategoryMapper() {
-    }
-
+@UtilityClass
+public class CategoryMapper {
     public static Category toEntity(NewCategoryDto dto) {
         return Category.builder()
                 .name(dto.getName())

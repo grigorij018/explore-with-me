@@ -1,15 +1,14 @@
 package ru.practicum.ewm.main.event;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.ewm.main.dto.event.EventState;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public final class EventSpecifications {
-    private EventSpecifications() {
-    }
-
+@UtilityClass
+public class EventSpecifications {
     public static Specification<Event> usersIn(Collection<Long> users) {
         return (root, query, cb) -> users == null || users.isEmpty()
                 ? cb.conjunction()

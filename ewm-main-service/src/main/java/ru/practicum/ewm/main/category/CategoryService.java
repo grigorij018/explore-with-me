@@ -53,6 +53,7 @@ public class CategoryService {
         return CategoryMapper.toDto(getExisting(catId));
     }
 
+    @Transactional(readOnly = true)
     public Category getExisting(Long catId) {
         return categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found"));
