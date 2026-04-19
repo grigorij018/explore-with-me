@@ -10,6 +10,7 @@ import ru.practicum.ewm.stats.dto.DateTimeFormat;
 import ru.practicum.ewm.stats.dto.EndpointHitDto;
 import ru.practicum.ewm.stats.dto.ViewStatsDto;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,8 +41,9 @@ public class StatsClient {
             builder.queryParam("uris", uris.toArray());
         }
 
+        URI uri = builder.build().encode().toUri();
         ResponseEntity<List<ViewStatsDto>> response = restTemplate.exchange(
-                builder.encode().toUriString(),
+                uri,
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
                 new ParameterizedTypeReference<>() {
