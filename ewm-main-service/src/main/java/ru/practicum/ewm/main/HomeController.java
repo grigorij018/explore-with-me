@@ -3,6 +3,7 @@ package ru.practicum.ewm.main;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//новая версия
 @RestController
 public class HomeController {
 
