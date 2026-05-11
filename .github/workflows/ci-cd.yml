@@ -63,6 +63,7 @@ jobs:
       - name: Deploy on Mac
         run: |
           cd ~/explore-with-me
+          git remote set-url origin https://github.com/grigorij018/explore-with-me.git
           git pull origin main
           docker compose up -d --build
           docker compose ps
