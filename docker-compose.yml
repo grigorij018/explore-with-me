@@ -1,7 +1,8 @@
 services:
   ewm-service:
     build:
-      context: ./ewm-main-service
+      context: .
+      dockerfile: ewm-main-service/Dockerfile
     image: ewm-main-service
     container_name: ewm-main-service
     depends_on:
@@ -37,7 +38,8 @@ services:
 
   stats-server:
     build:
-      context: ./ewm-stats-service/stats-server
+      context: .
+      dockerfile: ewm-stats-service/stats-server/Dockerfile
     image: ewm-stats-server
     container_name: ewm-stats-server
     depends_on:
