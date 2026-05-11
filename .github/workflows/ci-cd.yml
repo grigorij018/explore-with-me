@@ -54,38 +54,15 @@ jobs:
         run: docker compose down -v
 
   deploy:
-    name: Deploy to virtual machine
+    name: Deploy on local Mac
     needs: build-and-check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Check deploy secrets
-        id: deploy-secrets
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+      - name: Deploy on Mac
         run: |
-          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PRIVATE_KEY" ] || [ -z "$PROJECT_PATH" ]; then
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "Deploy skipped: add SSH_HOST, SSH_USER, SSH_PRIVATE_KEY and PROJECT_PATH repository secrets."
-          else
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Deploy over SSH
-        if: steps.deploy-secrets.outputs.enabled == 'true'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          script_stop: true
-          script: |
-            cd "${{ secrets.PROJECT_PATH }}"
-            git pull
-            docker compose up -d --build
-            docker compose ps
+          cd ~/explore-with-me
+          git pull origin main
+          docker compose up -d --build
+          docker compose ps
